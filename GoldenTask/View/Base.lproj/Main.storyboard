@@ -7,7 +7,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--GoldenTask-->
+        <!--Task List-->
         <scene sceneID="XIn-eD-To9">
             <objects>
                 <tableViewController id="Pdr-0Q-qls" customClass="GoldenTaskController" customModule="GoldenTask" customModuleProvider="target" sceneMemberID="viewController">
@@ -30,7 +30,7 @@
                             <outlet property="delegate" destination="Pdr-0Q-qls" id="iAC-vN-o2W"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="GoldenTask" id="PHQ-3a-RxR">
+                    <navigationItem key="navigationItem" title="Task List" id="PHQ-3a-RxR">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="TUp-qc-hyk">
                             <connections>
                                 <action selector="AddButton:" destination="Pdr-0Q-qls" id="4vw-AU-CUP"/>
@@ -53,12 +53,50 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="Pdr-0Q-qls" kind="relationship" relationship="rootViewController" id="L1x-iJ-q5O"/>
+                        <segue destination="dJr-iA-sDH" kind="relationship" relationship="rootViewController" id="n5m-1f-MMB"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rag-C3-GXs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="798.55072463768124" y="65.625"/>
+            <point key="canvasLocation" x="193" y="66"/>
+        </scene>
+        <!--Category-->
+        <scene sceneID="3CY-VP-0yl">
+            <objects>
+                <tableViewController id="dJr-iA-sDH" customClass="CategoryViewController" customModule="GoldenTask" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="eiU-SO-xHu">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="CategoryCell" id="ohr-8d-aVT">
+                                <rect key="frame" x="0.0" y="44.5" width="414" height="43.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ohr-8d-aVT" id="Esh-bK-y8l">
+                                    <rect key="frame" x="0.0" y="0.0" width="385.5" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="dJr-iA-sDH" id="dBg-0l-k4X"/>
+                            <outlet property="delegate" destination="dJr-iA-sDH" id="uta-6h-lHt"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Category" id="PKS-Tv-4pT">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="HAs-9i-ybL">
+                            <connections>
+                                <action selector="addButtonPressed:" destination="dJr-iA-sDH" id="0Aj-iO-N00"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="Pdr-0Q-qls" kind="show" identifier="goToTaskList" id="mzu-Xr-PV7"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zdp-10-uP7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="942" y="66"/>
         </scene>
     </scenes>
     <resources>

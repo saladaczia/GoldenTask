@@ -6,12 +6,17 @@
 //
 
 import UIKit
+import RealmSwift
 
 class GoldenTaskController: UITableViewController {
 
-    var itemArray = [Item]()
-    
-    let defaults = UserDefaults.standard
+    let realm = try! Realm()
+    var toDoItems: Results<Item>?
+    var selectedCategory: Category? {
+        didSet {
+            loadItem()
+        }
+    }
     
     
     // MARK: - Add New Item Button
@@ -20,72 +25,102 @@ class GoldenTaskController: UITableViewController {
         let alert = UIAlertController(title: "Add New Task", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             
-            let newItem = Item()
-            newItem.title = textField.text!
-            self.itemArray.append(newItem)
-            self.defaults.setValue(self.itemArray, forKey: "WorkTaskListArray")
+            if let currentCategory = self.selectedCategory {
+                do {
+                    try self.realm.write {
+                        let newItem = Item()
+                        newItem.title = textField.text!
+                        currentCategory.items.append(newItem)
+                    }
+                } catch {
+                    print("error")
+                }
+                
+            }
             self.tableView.reloadData()
         }
         alert.addAction(action)
         alert.addTextField { (alertTextField) in
-            alertTextField.placeholder = "Create new task"
+            alertTextField.placeholder = "Write Task Name"
             textField = alertTextField
         }
         present(alert, animated: true, completion: nil)
     }
+
+    
+    // MARK: - Load item function
+    
+    func loadItem() {
+        
+        toDoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        
+        tableView.reloadData()
+    }
+
+    // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let newItem = Item()
-        newItem.title = "First Task"
-        itemArray.append(newItem)
-        
-        let newItem2 = Item()
-        newItem2.title = "Second Task"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Third Task"
-        itemArray.append(newItem3)
-        
-        if let items = defaults.array(forKey: "WorkTaskListArray") as? [Item] {
-            itemArray = items
-         }
-        
+        navigationItem.title = selectedCategory?.name
     }
 
 
     // MARK: - TableView
  
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemArray.count
+        return toDoItems?.count ?? 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskItemCell", for: indexPath)
-        let item = itemArray[indexPath.row]
-        cell.textLabel?.text = item.title
-        
-        if itemArray[indexPath.row].done == true {
-            cell.accessoryType = .checkmark
+        if let item = toDoItems?[indexPath.row] {
+            cell.textLabel?.text = item.title
+            if toDoItems?[indexPath.row].done == true {
+                cell.accessoryType = .checkmark
+            } else {
+                cell.accessoryType = .none
+            }
         } else {
-            cell.accessoryType = .none
+            cell.textLabel?.text = "No Items Added"
         }
+
         return cell
     }
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if itemArray[indexPath.row].done == false {
-            itemArray[indexPath.row].done = true
-        } else {
-            itemArray[indexPath.row].done = false
+        if let item = toDoItems?[indexPath.row] {
+            do {
+                try realm.write {
+                    item.done = !item.done
+                }
+            } catch {
+                print("Error")
+            }
         }
         tableView.reloadData()
+        
+        
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        
-    
+
 }
+    // Delete table functions
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == .delete) {
+            if let item = toDoItems?[indexPath.row] {
+                do {
+                    try realm.write {
+                        realm.delete(item)
+                    }
+                } catch {
+                    print("Error")
+                }
+            }
+            tableView.reloadData()
+        }
+    }
 
 }
 
